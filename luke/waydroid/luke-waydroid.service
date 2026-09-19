@@ -1,0 +1,16 @@
+[Unit]
+Description=Luke Waydroid container bootstrap
+Requires=dev-binderfs.mount
+After=systemd-modules-load.service local-fs.target dev-binderfs.mount
+Before=graphical.target
+ConditionPathExists=/usr/bin/waydroid
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/modprobe binder_linux devices=binder,hwbinder,vndbinder
+ExecStart=/usr/bin/systemctl start waydroid-container.service
+ExecStop=/usr/bin/systemctl stop waydroid-container.service
+
+[Install]
+WantedBy=multi-user.target

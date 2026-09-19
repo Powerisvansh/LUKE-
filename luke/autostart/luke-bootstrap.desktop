@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Luke Platform Bootstrap
+Comment=Initialises the Luke desktop on login
+Exec=/home/aman/.luke/bin/luke-bootstrap.sh
+Terminal=false
+NoDisplay=true
+X-Luke=1

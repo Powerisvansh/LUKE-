@@ -1,0 +1,13 @@
+[Unit]
+Description=Android binderfs for Waydroid
+Before=luke-waydroid.service
+ConditionPathIsDirectory=/dev/binderfs
+
+[Mount]
+What=binder
+Where=/dev/binderfs
+Type=binder
+Options=mode=0755
+
+[Install]
+WantedBy=multi-user.target
