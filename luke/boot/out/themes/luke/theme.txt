@@ -1,0 +1,65 @@
+# Luke GRUB theme
+title-text: "Luke"
+title-font: "luke-26"
+title-color: "#EAF1F8"
+desktop-image: "background-1366x768.png"
+desktop-color: "#080C13"
+
++ boot_menu {
+    left = 12%
+    top = 42%
+    width = 76%
+    height = 30%
+    item_font = "luke-16"
+    item_color = "#A9B7C9"
+    selected_item_color = "#EAF1F8"
+    item_icon_space = 0
+    item_height = 34
+    item_padding = 14
+    item_spacing = 8
+    selected_item_pixmap_style = "select_*.png"
+}
+
++ label {
+    text = "CHOOSE AN OPERATING SYSTEM"
+    font = "luke-16"
+    color = "#6C7B92"
+    align = "center"
+    left = 50%-400
+    top = 34%
+    width = 800
+    height = 26
+}
+
++ label {
+    id = "__timeout__"
+    text = ""
+    font = "luke-26"
+    color = "#33E0B0"
+    align = "center"
+    left = 50%-100
+    top = 76%
+    width = 200
+    height = 34
+}
+
++ progress_bar {
+    id = "__timeout__"
+    left = 22%
+    top = 84%
+    width = 56%
+    height = 8
+    bar_style = "progressbar_full_*.png"
+    empty_style = "progressbar_empty_*.png"
+}
+
++ label {
+    text = "UP / DOWN navigate     ENTER boot     E edit     C console"
+    font = "luke-16"
+    color = "#6C7B92"
+    align = "center"
+    left = 50%-420
+    top = 92%
+    width = 840
+    height = 26
+}
