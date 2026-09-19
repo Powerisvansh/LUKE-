@@ -112,7 +112,7 @@ class Monitor(LukeWindow):
 
         main.pack_start(self._card(
             "Processor", self.cpu_bar, self.cpu_label,
-            "All cores", horizontal=False), False, False, 0)
+            "All cores"), False, False, 0)
         main.pack_start(self._card("Memory", self.mem_bar, self.mem_label, "RAM"), False, False, 0)
         main.pack_start(self._card("Swap", self.swap_bar, self.swap_label, "swap"), False, False, 0)
         main.pack_start(self._card("Storage", None, None, "filesystems", body=self.disk_box), False, False, 0)

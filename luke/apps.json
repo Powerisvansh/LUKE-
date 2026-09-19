@@ -251,6 +251,52 @@
     "tags": []
   },
   {
+    "id": "clock",
+    "name": "Clock",
+    "exec": [
+      "python3",
+      "~/.luke/apps/clock/main.py"
+    ],
+    "icon": "luke:clock",
+    "color": "#244a52",
+    "category": "Utilities",
+    "desc": "Live clock and stopwatch",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "time",
+      "stopwatch",
+      "timer",
+      "watch"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
+  },
+  {
+    "id": "calendar",
+    "name": "Calendar",
+    "exec": [
+      "python3",
+      "~/.luke/apps/calendar/main.py"
+    ],
+    "icon": "luke:calendar",
+    "color": "#3a4a63",
+    "category": "Utilities",
+    "desc": "Month calendar",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "month",
+      "schedule",
+      "events",
+      "date"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
+  },
+  {
     "id": "launcher",
     "name": "App Launcher",
     "exec": [

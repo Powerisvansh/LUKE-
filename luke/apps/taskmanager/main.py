@@ -18,11 +18,11 @@ def _stat_fields(pid):
             raw = fh.read()
     except OSError:
         return None
-    name, _, rest = raw.partition(")")
+    name, _, rest = raw.rpartition(")")
     parts = rest.split()
     if len(parts) < 15:
         return None
-    comm = name.split(" ")[-1] if " " in name else name
+    comm = name.split(" ", 1)[-1] if " " in name else name
     state = parts[0]
     utime = int(parts[11])
     stime = int(parts[12])

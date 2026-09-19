@@ -326,3 +326,120 @@ separator { background-color: @stroke2; }
   border-color: transparent;
   color: #04302A;
 }
+
+/* ---------- standalone app chrome (LukeWindow apps) ---------- */
+.luke-card {
+  background-color: @surface;
+  border: 1px solid @stroke2;
+  border-radius: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+.luke-card > * { background: transparent; }
+
+.luke-card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: @paper;
+  letter-spacing: 0.3px;
+}
+.luke-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: @paper;
+  letter-spacing: 0.3px;
+}
+.luke-sub {
+  font-size: 11px;
+  color: @faint;
+}
+.luke-big {
+  font-size: 30px;
+  font-weight: 700;
+  color: @paper;
+}
+.luke-accent {
+  color: @lumen;
+  font-weight: 600;
+}
+
+.luke-tile {
+  border-radius: 16px;
+  background-color: transparent;
+  border: none;
+  padding: 14px 10px;
+  transition: 120ms ease;
+}
+.luke-tile:hover { background-color: rgba(255, 255, 255, 0.06); }
+.luke-tile.selected {
+  background-color: rgba(51, 224, 176, 0.14);
+  box-shadow: 0 0 0 2px rgba(51, 224, 176, 0.55);
+}
+.luke-tile-name {
+  font-size: 11px;
+  color: @ink;
+}
+.luke-chip {
+  border-radius: 900px;
+  padding: 5px 14px;
+  border: 1px solid @stroke2;
+  background-color: transparent;
+  color: @ink;
+}
+.luke-chip:hover { border-color: @stroke; color: @paper; }
+.luke-chip.selected {
+  background-color: @lumen;
+  border-color: transparent;
+  color: #04302A;
+  font-weight: 600;
+}
+
+.launcher-section-label,
+.sec-label-h2 {
+  font-size: 13px;
+  font-weight: 700;
+  color: @ink;
+  letter-spacing: 0.3px;
+}
+.launcher-search {
+  background-color: @surface;
+  border: 1px solid @stroke;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.quick-panel {
+  background-color: @veil;
+  border: 1px solid @stroke2;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.4);
+}
+.quick-panel .quick {
+  background-color: @surface;
+  border: 1px solid @stroke;
+  border-radius: 14px;
+}
+.quick-panel .quick.checked {
+  background-color: rgba(51, 224, 176, 0.16);
+  border-color: rgba(51, 224, 176, 0.55);
+}
+
+progressbar.red progress { background-color: @ember; }
+progressbar.yellow progress { background-color: @amber; }
+
+/* ---------- calendar ---------- */
+.cal-cell {
+  border-radius: 10px;
+  padding: 8px 0;
+  border: 1px solid @stroke2;
+  background-color: transparent;
+  color: @paper;
+}
+.cal-cell:hover { background-color: @raised; border-color: @stroke; }
+.cal-cell.cal-other { opacity: 0.35; }
+.cal-cell.cal-today {
+  background-color: @lumen;
+  border-color: transparent;
+  color: #04302A;
+  font-weight: 700;
+}

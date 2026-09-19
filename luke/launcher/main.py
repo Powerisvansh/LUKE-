@@ -85,7 +85,6 @@ class Launcher(Gtk.Window):
         self.cats = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         self.cats.set_halign(Gtk.Align.CENTER)
         self.cat_buttons = {}
-        self._build_cats()
 
         self.flow = Gtk.FlowBox()
         self.flow.set_selection_mode(Gtk.SelectionMode.SINGLE)
@@ -111,6 +110,7 @@ class Launcher(Gtk.Window):
         self.favs_box.set_selection_mode(Gtk.SelectionMode.NONE)
         self.favs_box.set_valign(Gtk.Align.START)
         self.favs_box.set_halign(Gtk.Align.START)
+        self._build_cats()
 
         content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=18)
         content.set_margin_start(60)

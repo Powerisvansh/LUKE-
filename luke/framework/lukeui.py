@@ -84,17 +84,26 @@ class Glyph(Gtk.DrawingArea):
 
     def _render(self, _w, cr):
         s = min(self.get_allocated_width(), self.get_allocated_height())
-        cr.set_source_rgba(0, 0, 0, 0)
-        cr.set_operator(cr.OPERATOR_SOURCE)
+        try:
+            cr.set_operator(cr.OPERATOR_SOURCE)
+        except AttributeError:
+            pass
         cr.paint()
-        cr.set_operator(cr.OPERATOR_OVER)
         self._draw(cr, s, self._data)
+
+
+def _line_cap(cr, name):
+    try:
+        cap = getattr(cr, name)
+        cr.set_line_cap(cap)
+    except AttributeError:
+        pass
 
 
 def _stroke(cr, x0, y0, x1, y1, width, s):
     cr.set_source_rgba(0.918, 0.941, 0.973, 0.92)
     cr.set_line_width(width)
-    cr.set_line_cap(cr.LINE_CAP_ROUND)
+    _line_cap(cr, "LINE_CAP_ROUND")
     cr.move_to(x0, y0)
     cr.line_to(x1, y1)
     cr.stroke()
@@ -109,7 +118,7 @@ def glyph_max(cr, s, _d):
     r = s * 0.76 - m
     cr.set_source_rgba(0.918, 0.941, 0.973, 0.92)
     cr.set_line_width(s * 0.1)
-    cr.set_line_cap(cr.LINE_CAP_SQUARE)
+    _line_cap(cr, "LINE_CAP_SQUARE")
     cr.rectangle(m, m, r, r)
     cr.stroke()
 
@@ -168,7 +177,7 @@ class LukeWindow(Gtk.Window):
                 b.connect("clicked", lambda _w: self.iconify())
             else:
                 b.connect("clicked", self._on_maximize)
-            hb.pack_end(b, False, False, 0)
+            hb.pack_end(b)
 
         self.body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         root.pack_start(self.body, True, True, 0)

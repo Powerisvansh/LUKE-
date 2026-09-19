@@ -3,16 +3,14 @@
 import os
 import platform
 import socket
+
 from lukeui import LukeWindow, start
+import lukeassets
 import gi
 
 gi.require_version("Gtk", "3.0")
-gi.require_version("PangoCairo", "1.0")
 
-from gi.repository import Gtk, Gdk, cairo, Pango, PangoCairo
-
-ACCENT_RGB = (0.31, 0.82, 0.77)   # #4FD1C5
-BG_DARK_RGB = (0.055, 0.075, 0.094)
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 
 def os_release(path="/etc/os-release"):
@@ -42,10 +40,13 @@ def cpu_info():
 
 
 def mem_total_mb():
-    with open("/proc/meminfo") as fh:
-        for line in fh:
-            if line.startswith("MemTotal:"):
-                return int(line.split()[1]) // 1024
+    try:
+        with open("/proc/meminfo") as fh:
+            for line in fh:
+                if line.startswith("MemTotal:"):
+                    return int(line.split()[1]) // 1024
+    except OSError:
+        pass
     return 0
 
 
@@ -64,31 +65,15 @@ def disk_summary():
     return "%.1fG free of %.1fG (%s)" % (free / (1 << 30), total / (1 << 30), path)
 
 
-def _round_rect(cr, x, y, w, h, r):
-    cr.new_path()
-    cr.arc(x + r, y + r, r, 3.1416, 4.7124)
-    cr.arc(x + w - r, y + r, r, 4.7124, 6.2832)
-    cr.arc(x + w - r, y + h - r, r, 0, 1.5708)
-    cr.arc(x + r, y + h - r, r, 1.5708, 3.1416)
-    cr.close_path()
-
-
-def logo_pixbuf(size=128):
-    from gi.repository import Gdk
-    surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, size, size)
-    cr = cairo.Context(surface)
-    _round_rect(cr, 2, 2, size - 4, size - 4, size * 0.22)
-    cr.set_source_rgb(*ACCENT_RGB)
-    cr.fill()
-    layout = PangoCairo.create_layout(cr)
-    layout.set_font_description(
-        Pango.FontDescription("Luke Sans Bold %d" % int(size * 0.55)))
-    layout.set_text("L", -1)
-    w, h = layout.get_pixel_size()
-    cr.move_to((size - w) / 2, (size - h) / 2 - size * 0.03)
-    cr.set_source_rgb(*BG_DARK_RGB)
-    PangoCairo.show_layout(cr, layout)
-    return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size)
+def brand_image(size=96):
+    path = lukeassets.brand_mark() or lukeassets.wordmark()
+    if not path:
+        return Gtk.Label(label="L")
+    try:
+        pb = GdkPixbuf.Pixbuf.new_from_file_at_size(path, size, size)
+        return Gtk.Image.new_from_pixbuf(pb)
+    except GLib.Error:
+        return Gtk.Label(label="L")
 
 
 class About(LukeWindow):
@@ -102,7 +87,7 @@ class About(LukeWindow):
         arch = platform.machine()
         model, cores = cpu_info()
 
-        img = Gtk.Image.new_from_pixbuf(logo_pixbuf(96))
+        img = brand_image(96)
         img.set_margin_top(20)
 
         title = Gtk.Label(label=name, xalign=0)
