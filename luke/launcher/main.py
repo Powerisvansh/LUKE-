@@ -131,12 +131,7 @@ class Launcher(Gtk.Window):
 
     # ---- content ----------------------------------------------------------
     def _build_cats(self):
-        seen = set()
-        for app in self._all:
-            seen.add(app.category)
-        cats = sorted(seen)
-        chips = [("All", None)]
-        chips += [(c, c) for c in cats]
+        chips = [("All", None)] + [(c, c) for c, _ in lukeapps.categories()]
         for label, value in chips:
             btn = Gtk.Button(label=label)
             btn.get_style_context().add_class("luke-chip")
@@ -157,20 +152,9 @@ class Launcher(Gtk.Window):
     def _on_search(self, _w):
         self.refresh()
 
-    def _term(self, text):
-        return text.lower()
-
-    def _matches(self, app):
-        query = self.search.get_text().strip().lower()
-        if not query:
-            return True
-        hay = (app.name + " " + app.desc + " " + app.category).lower()
-        return query in hay
-
     def refresh(self):
-        apps = [a for a in self._all
-                if (not self._filter or a.category == self._filter)
-                and self._matches(a)]
+        query = self.search.get_text().strip()
+        apps = lukeapps.apps(query=query or None, category=self._filter or None)
         self._fill(self.flow, apps, section=None)
 
         query = self.search.get_text().strip()

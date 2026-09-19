@@ -8,7 +8,19 @@
     "icon": "luke:terminal",
     "color": "#24404a",
     "category": "System",
-    "desc": "Command line shell"
+    "desc": "Command line shell",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "cli",
+      "console",
+      "shell",
+      "bash",
+      "run commands"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "notes",
@@ -19,7 +31,19 @@
     "icon": "luke:editor",
     "color": "#3d5a7c",
     "category": "Productivity",
-    "desc": "Quick notes and text files"
+    "desc": "Quick notes and text files",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "note",
+      "text",
+      "write",
+      "pad",
+      "scratch"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "gallery",
@@ -30,7 +54,18 @@
     "icon": "luke:viewer",
     "color": "#5a4d4c",
     "category": "Media",
-    "desc": "Image viewer"
+    "desc": "Image viewer",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "image",
+      "photo",
+      "pictures",
+      "view photos"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "files",
@@ -41,7 +76,18 @@
     "icon": "luke:files",
     "color": "#31505e",
     "category": "System",
-    "desc": "File manager"
+    "desc": "File manager",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "folder",
+      "directories",
+      "explorer",
+      "browse disks"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "editor",
@@ -52,7 +98,18 @@
     "icon": "luke:editor",
     "color": "#43607a",
     "category": "System",
-    "desc": "Simple text editor"
+    "desc": "Simple text editor",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "text",
+      "code",
+      "edit",
+      "document"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "calculator",
@@ -64,7 +121,18 @@
     "icon": "luke:calculator",
     "color": "#2b5c4a",
     "category": "Utilities",
-    "desc": "Arithmetic calculator"
+    "desc": "Arithmetic calculator",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "math",
+      "arithmetic",
+      "compute",
+      "numbers"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "monitor",
@@ -76,7 +144,19 @@
     "icon": "luke:monitor",
     "color": "#3a4a63",
     "category": "System",
-    "desc": "CPU, memory and disk activity"
+    "desc": "CPU, memory and disk activity",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "cpu",
+      "ram",
+      "memory",
+      "disk",
+      "statistics"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "taskmanager",
@@ -88,7 +168,18 @@
     "icon": "luke:task",
     "color": "#5c3d52",
     "category": "System",
-    "desc": "Running processes and system resources"
+    "desc": "Running processes and system resources",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "process",
+      "performance",
+      "resources",
+      "top"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "settings",
@@ -100,7 +191,18 @@
     "icon": "luke:settings",
     "color": "#4a4463",
     "category": "System",
-    "desc": "System settings"
+    "desc": "System settings",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "config",
+      "preferences",
+      "control panel",
+      "appearance"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "network",
@@ -112,7 +214,18 @@
     "icon": "luke:network",
     "color": "#244a52",
     "category": "System",
-    "desc": "Wi-Fi and connections"
+    "desc": "Wi-Fi and connections",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "wifi",
+      "ethernet",
+      "connections",
+      "wireless"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "about",
@@ -124,7 +237,18 @@
     "icon": "luke:about",
     "color": "#1f3d40",
     "category": "System",
-    "desc": "Operating system information"
+    "desc": "Operating system information",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "version",
+      "info",
+      "system",
+      "license"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "launcher",
@@ -136,7 +260,18 @@
     "icon": "luke:launcher",
     "color": "#2c3d46",
     "category": "System",
-    "desc": "Browse and launch applications"
+    "desc": "Browse and launch applications",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "drawer",
+      "grid",
+      "menu",
+      "browse apps"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   },
   {
     "id": "quicksettings",
@@ -148,6 +283,17 @@
     "icon": "luke:quick",
     "color": "#3a4450",
     "category": "System",
-    "desc": "Volume, brightness, Wi-Fi and power"
+    "desc": "Volume, brightness, Wi-Fi and power",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "volume",
+      "brightness",
+      "power",
+      "toggles"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   }
 ]

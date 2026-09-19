@@ -1,3 +1,4 @@
+import json
 import math
 import os
 
@@ -163,12 +164,49 @@ def preview():
     print(f"preview -> {OUT}/preview-design.png")
 
 
+def write_manifest():
+    """Assets manifest (device-tree style) so tools never hard-code paths."""
+    rel = lambda *parts: "/".join(parts)
+    manifest = {
+        "version": 2,
+        "brand": {
+            "mark": {
+                str(s): rel("brand", "luke-mark-%d.png" % s)
+                for s in (256, 512, 1024)
+            },
+            "wordmark": rel("brand", "luke-wordmark-1024.png"),
+        },
+        "wallpapers": {
+            "%dx%d" % (w, h): rel("wallpapers", "luke-wallpaper-%dx%d.png" % (w, h))
+            for w, h in ((1366, 768), (1920, 1080))
+        },
+        "icons": {
+            name: {
+                str(s): rel("icons", "%s-%d.png" % (name, s))
+                for s in (48, 128, 256)
+            }
+            for name in iconlib.ICONS
+        },
+        "defaults": {
+            "wallpaper": rel("wallpapers", "luke-wallpaper-1366x768.png"),
+            "mark": rel("brand", "luke-mark-512.png"),
+            "wordmark": rel("brand", "luke-wordmark-1024.png"),
+        },
+    }
+    out = os.path.join(ASSETS, "manifest.json")
+    with open(out, "w", encoding="utf-8") as fh:
+        json.dump(manifest, fh, indent=2)
+        fh.write("\n")
+    print("manifest ->", out)
+
+
 def main():
     for s in (48, 128, 256):
         for name in iconlib.ICONS:
             render_icon(name, s)
     brand_pngs()
     wallpapers()
+    write_manifest()
     preview()
     print("assets written to", ASSETS)
 

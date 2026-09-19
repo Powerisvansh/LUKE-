@@ -27,6 +27,7 @@ import time
 sys.path.insert(0, os.path.expanduser("~/.luke/framework"))
 
 from lukepaths import ROOT, p  # noqa: E402
+import lukeassets  # noqa: E402
 import lukeapps  # noqa: E402
 from lukeui import ensure_css, show_error  # noqa: E402
 
@@ -137,7 +138,7 @@ class ShellWindow(Gtk.Window):
 
         brand = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         mark = Gtk.Image()
-        mpath = p("design", "assets", "brand", "luke-mark-1024.png")
+        mpath = lukeassets.brand_mark()
         if os.path.exists(mpath):
             try:
                 mark.set_from_pixbuf(
@@ -462,11 +463,7 @@ class ShellWindow(Gtk.Window):
 
     # ---------------------------------------------------------- launcher
     def _build_cats(self):
-        seen = []
-        for app in self._apps:
-            if app.category not in seen:
-                seen.append(app.category)
-        chips = [("All", None)] + [(c, c) for c in seen]
+        chips = [("All", None)] + [(c, c) for c, _ in lukeapps.categories()]
         for label, value in chips:
             btn = Gtk.Button(label=label)
             btn.get_style_context().add_class("chip")
@@ -483,14 +480,10 @@ class ShellWindow(Gtk.Window):
         self._refresh_launcher()
 
     def _refresh_launcher(self):
-        query = self.search.get_text().strip().lower()
+        query = self.search.get_text().strip()
         for child in self.flow.get_children():
             self.flow.remove(child)
-        for app in self._apps:
-            if self._cat and app.category != self._cat:
-                continue
-            if query and query not in (app.name + " " + app.desc).lower():
-                continue
+        for app in lukeapps.apps(query=query or None, category=self._cat or None):
             self.flow.add(self._launcher_tile(app))
         self.flow.show_all()
 
