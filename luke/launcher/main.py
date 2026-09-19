@@ -20,8 +20,11 @@ def _app_tile(app):
     btn.set_tooltip_text(app.desc or app.name)
     box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
     box.set_halign(Gtk.Align.CENTER)
-    img = Gtk.Image.new_from_icon_name(app.icon, Gtk.IconSize.DIALOG)
+    img = Gtk.Image.new_from_icon_name(app.icon_name(), Gtk.IconSize.DIALOG)
     img.set_pixel_size(APP_SIZE)
+    path = app.icon_path(APP_SIZE)
+    if path:
+        img.set_from_file(path)
     name = Gtk.Label(label=app.name)
     name.get_style_context().add_class("luke-tile-name")
     name.set_line_wrap(True)
@@ -66,7 +69,7 @@ class Launcher(Gtk.Window):
         self.search.set_placeholder_text("Search applications…")
         self.search.get_style_context().add_class("launcher-search")
         self.search.set_size_request(480, -1)
-        self.search.connect("search-changed", self._on_search)
+        self.search.connect("changed", self._on_search)
         self.search.connect("activate", self._on_enter)
 
         close = Gtk.Button(label="✕")

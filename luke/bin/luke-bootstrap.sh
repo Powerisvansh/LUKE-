@@ -6,7 +6,7 @@ LUKE="$HOME/.luke"
 # regenerate .desktop launchers from the registry
 python3 "$LUKE/tools/gen-desktops.py" >/dev/null 2>&1 || true
 
-# app-drawer shortcut: Super + L
+# app-drawer shortcut: Super + L (activates the shell launcher overlay)
 if command -v xfconf-query >/dev/null 2>&1; then
   xfconf-query -c xfce4-keyboard-shortcuts \
     -p "/commands/custom/<Super>l" \
@@ -14,7 +14,15 @@ if command -v xfconf-query >/dev/null 2>&1; then
     --create --type string >/dev/null 2>&1 || true
 fi
 
-# quick-settings shortcut: Super + S
+# home surface: Super + H
+if command -v xfconf-query >/dev/null 2>&1; then
+  xfconf-query -c xfce4-keyboard-shortcuts \
+    -p "/commands/custom/<Super>h" \
+    -s "$LUKE/bin/luke-home" \
+    --create --type string >/dev/null 2>&1 || true
+fi
+
+# quick-settings sheet: Super + S
 if command -v xfconf-query >/dev/null 2>&1; then
   xfconf-query -c xfce4-keyboard-shortcuts \
     -p "/commands/custom/<Super>s" \

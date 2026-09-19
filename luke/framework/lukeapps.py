@@ -36,6 +36,21 @@ class App:
         self.desc = data.get("desc", "")
         self.terminal = bool(data.get("terminal", False))
 
+    def icon_path(self, size=128):
+        """Path to the original Luke icon PNG, or None to use a theme icon."""
+        if self.icon.startswith("luke:"):
+            gid = self.icon.split(":", 1)[1]
+            for s in (size, 256, 128, 48):
+                p = os.path.join(ROOT, "design", "assets", "icons",
+                                 "%s-%d.png" % (gid, s))
+                if os.path.exists(p):
+                    return p
+        return None
+
+    def icon_name(self):
+        """Theme icon to fall back on when no Luke PNG exists."""
+        return self.icon.replace("luke:", "luke-", 1)
+
 
 def _state_path(name):
     return os.path.join(STATE, name)

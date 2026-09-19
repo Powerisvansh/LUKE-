@@ -227,3 +227,102 @@ separator { background-color: @stroke2; }
   border-radius: 14px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
 }
+
+/* ---------- LukeShell ---------- */
+.shell { background-color: @void; }
+.shell .home { background: transparent; }
+
+.shell .home-mid { padding: 0 40px; }
+.shell .greet-label {
+  font-size: 40px;
+  font-weight: 700;
+  color: @paper;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.shell .wordmark { font-size: 14px; font-weight: 700; color: @paper; }
+
+.shell .launcher-entry {
+  background-color: rgba(19, 27, 40, 0.72);
+  border: 1px solid @stroke;
+  border-radius: 14px;
+  padding: 12px 16px;
+  font-size: 14px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.shell .sec-label-h2 {
+  font-size: 14px;
+  font-weight: 700;
+  color: @ink;
+  letter-spacing: 0.3px;
+}
+
+.shell .sec-label-h3 {
+  font-size: 12px;
+  font-weight: 600;
+  color: @faint;
+}
+
+.shell .tile-name {
+  font-size: 11px;
+  color: @ink;
+  max-width: 88px;
+}
+
+.shell .status-btn {
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+}
+.shell .status-btn:hover { background-color: rgba(255, 255, 255, 0.07); }
+
+.shell .dock-ctrl {
+  background-color: @surface;
+  border: 1px solid @stroke2;
+  border-radius: 12px;
+  min-height: 34px;
+  min-width: 34px;
+}
+
+.shell .shell-statusbar,
+.shell .shell-dock { border-radius: 14px; }
+
+.shell .clock-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: @paper;
+}
+.shell .date-label { font-size: 11px; color: @ink; }
+
+.shell .launcher-surface {
+  background-color: rgba(8, 12, 19, 0.92);
+  border-bottom: 1px solid @stroke2;
+  padding: 0 40px 30px 40px;
+}
+
+.shell .launcher-search {
+  background-color: @surface;
+  border: 1px solid @stroke;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 13px;
+}
+
+.shell .quick-sheet {
+  background-color: rgba(22, 30, 44, 0.94);
+  border: 1px solid @stroke;
+  border-left: none;
+  border-radius: 18px 0 0 18px;
+  box-shadow: -12px 0 36px rgba(0, 0, 0, 0.4);
+  padding: 22px 20px;
+}
+.shell .quick-sheet scale { padding: 0 2px; }
+.shell .chip.checked {
+  background-color: @lumen;
+  border-color: transparent;
+  color: #04302A;
+}

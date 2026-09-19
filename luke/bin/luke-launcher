@@ -1,4 +1,3 @@
 #!/bin/sh
-# Luke launcher launcher — opens the app drawer. Used by the Super key
-# shortcut and the dock button.
-exec /usr/bin/python3 "${HOME:-/home/aman}/.luke/launcher/main.py"
+# Open the LukeShell launcher overlay (start the shell if needed).
+exec /usr/bin/python3 "$HOME/.luke/shell/client.py" launcher

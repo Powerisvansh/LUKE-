@@ -23,8 +23,8 @@ done
 cp -f "$SRC/apps.json" "$HOME_TGT/apps.json"
 
 mkdir -p "$TARGET/home/aman/.config/autostart"
-cp -f "$SRC/autostart/luke-bootstrap.desktop" \
-      "$TARGET/home/aman/.config/autostart/luke-bootstrap.desktop"
+cp -f "$SRC"/autostart/*.desktop \
+      "$TARGET/home/aman/.config/autostart/"
 
 chmod -R u+rwX "$HOME_TGT"
 chmod +x "$HOME_TGT/bin/"* 2>/dev/null || true

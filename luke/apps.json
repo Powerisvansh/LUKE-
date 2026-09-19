@@ -2,8 +2,10 @@
   {
     "id": "terminal",
     "name": "Terminal",
-    "exec": ["/usr/bin/xfce4-terminal"],
-    "icon": "utilities-terminal",
+    "exec": [
+      "/usr/bin/xfce4-terminal"
+    ],
+    "icon": "luke:terminal",
     "color": "#24404a",
     "category": "System",
     "desc": "Command line shell"
@@ -11,8 +13,10 @@
   {
     "id": "notes",
     "name": "Notes",
-    "exec": ["/usr/bin/mousepad"],
-    "icon": "accessories-text-editor",
+    "exec": [
+      "/usr/bin/mousepad"
+    ],
+    "icon": "luke:editor",
     "color": "#3d5a7c",
     "category": "Productivity",
     "desc": "Quick notes and text files"
@@ -20,8 +24,10 @@
   {
     "id": "gallery",
     "name": "Gallery",
-    "exec": ["/usr/bin/eog"],
-    "icon": "image-x-generic",
+    "exec": [
+      "/usr/bin/eog"
+    ],
+    "icon": "luke:viewer",
     "color": "#5a4d4c",
     "category": "Media",
     "desc": "Image viewer"
@@ -29,8 +35,10 @@
   {
     "id": "files",
     "name": "Files",
-    "exec": ["/usr/bin/thunar"],
-    "icon": "system-file-manager",
+    "exec": [
+      "/usr/bin/thunar"
+    ],
+    "icon": "luke:files",
     "color": "#31505e",
     "category": "System",
     "desc": "File manager"
@@ -38,8 +46,10 @@
   {
     "id": "editor",
     "name": "Text Editor",
-    "exec": ["/usr/bin/mousepad"],
-    "icon": "org.xfce.mousepad",
+    "exec": [
+      "/usr/bin/mousepad"
+    ],
+    "icon": "luke:editor",
     "color": "#43607a",
     "category": "System",
     "desc": "Simple text editor"
@@ -47,8 +57,11 @@
   {
     "id": "calculator",
     "name": "Calculator",
-    "exec": ["python3", "~/.luke/apps/calculator/main.py"],
-    "icon": "accessories-calculator",
+    "exec": [
+      "python3",
+      "~/.luke/apps/calculator/main.py"
+    ],
+    "icon": "luke:calculator",
     "color": "#2b5c4a",
     "category": "Utilities",
     "desc": "Arithmetic calculator"
@@ -56,8 +69,11 @@
   {
     "id": "monitor",
     "name": "System Monitor",
-    "exec": ["python3", "~/.luke/apps/monitor/main.py"],
-    "icon": "utilities-system-monitor",
+    "exec": [
+      "python3",
+      "~/.luke/apps/monitor/main.py"
+    ],
+    "icon": "luke:monitor",
     "color": "#3a4a63",
     "category": "System",
     "desc": "CPU, memory and disk activity"
@@ -65,8 +81,11 @@
   {
     "id": "taskmanager",
     "name": "Task Manager",
-    "exec": ["python3", "~/.luke/apps/taskmanager/main.py"],
-    "icon": "utilities-system-monitor",
+    "exec": [
+      "python3",
+      "~/.luke/apps/taskmanager/main.py"
+    ],
+    "icon": "luke:task",
     "color": "#5c3d52",
     "category": "System",
     "desc": "Running processes and system resources"
@@ -74,8 +93,11 @@
   {
     "id": "settings",
     "name": "Settings",
-    "exec": ["python3", "~/.luke/apps/settings/main.py"],
-    "icon": "preferences-system",
+    "exec": [
+      "python3",
+      "~/.luke/apps/settings/main.py"
+    ],
+    "icon": "luke:settings",
     "color": "#4a4463",
     "category": "System",
     "desc": "System settings"
@@ -83,8 +105,11 @@
   {
     "id": "network",
     "name": "Network",
-    "exec": ["python3", "~/.luke/apps/network/main.py"],
-    "icon": "preferences-system-network",
+    "exec": [
+      "python3",
+      "~/.luke/apps/network/main.py"
+    ],
+    "icon": "luke:network",
     "color": "#244a52",
     "category": "System",
     "desc": "Wi-Fi and connections"
@@ -92,7 +117,10 @@
   {
     "id": "about",
     "name": "About Luke",
-    "exec": ["python3", "~/.luke/apps/about/main.py"],
+    "exec": [
+      "python3",
+      "~/.luke/apps/about/main.py"
+    ],
     "icon": "luke:about",
     "color": "#1f3d40",
     "category": "System",
@@ -101,8 +129,11 @@
   {
     "id": "launcher",
     "name": "App Launcher",
-    "exec": ["python3", "~/.luke/launcher/main.py"],
-    "icon": "appgrid",
+    "exec": [
+      "python3",
+      "~/.luke/launcher/main.py"
+    ],
+    "icon": "luke:launcher",
     "color": "#2c3d46",
     "category": "System",
     "desc": "Browse and launch applications"
@@ -110,8 +141,11 @@
   {
     "id": "quicksettings",
     "name": "Quick Settings",
-    "exec": ["python3", "~/.luke/apps/quicksettings/main.py"],
-    "icon": "preferences-system",
+    "exec": [
+      "python3",
+      "~/.luke/apps/quicksettings/main.py"
+    ],
+    "icon": "luke:quick",
     "color": "#3a4450",
     "category": "System",
     "desc": "Volume, brightness, Wi-Fi and power"

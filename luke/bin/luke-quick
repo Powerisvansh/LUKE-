@@ -1,4 +1,3 @@
 #!/bin/sh
-# Luke quick settings — opens the Quick Settings overlay. Used by the
-# Super+S shortcut, the launcher and the Whisker menu.
-exec /usr/bin/python3 "${HOME:-/home/aman}/.luke/apps/quicksettings/main.py"
+# Open the LukeShell quick-settings sheet (start the shell if needed).
+exec /usr/bin/python3 "$HOME/.luke/shell/client.py" quick
