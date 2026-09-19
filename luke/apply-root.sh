@@ -5,8 +5,9 @@
 #     sudo bash /home/aman/Desktop/operating/luke/apply-root.sh
 #
 # What it does:
-#   1. Installs two small runtime packages inside Luke:
+#   1. Installs small runtime packages inside Luke:
 #        gir1.2-lightdm-1   -> LightDM Python bindings for the custom greeter
+#        python3-cairo      -> cairo module needed for drawing (avatar, graphs)
 #        pulseaudio-utils   -> pactl, so the Settings app can set volume
 #   2. Installs the custom Luke greeter (login screen) into /usr/local.
 #   3. Registers the greeter with LightDM and turns off auto-login.
@@ -27,19 +28,22 @@ for d in proc sys dev run; do
 done
 cp -f /etc/resolv.conf "$TARGET/etc/resolv.conf" 2>/dev/null || true
 
-echo "==> installing packages inside Luke (gir1.2-lightdm-1, pulseaudio-utils)"
+echo "==> installing packages inside Luke (gir1.2-lightdm-1, python3-cairo, pulseaudio-utils)"
 chroot "$TARGET" /bin/bash -c '
   export DEBIAN_FRONTEND=noninteractive LANG=C
   apt-get update -q
-  apt-get install -y --no-install-recommends gir1.2-lightdm-1 pulseaudio-utils
+  apt-get install -y --no-install-recommends gir1.2-lightdm-1 python3-cairo pulseaudio-utils
 '
 
 echo "==> installing the Luke greeter (login screen)"
-mkdir -p "$TARGET/usr/local/lib/luke/greeter" "$TARGET/usr/local/bin" "$TARGET/usr/share/xgreeters"
+mkdir -p "$TARGET/usr/local/lib/luke/greeter" "$TARGET/usr/local/lib/luke/assets" "$TARGET/usr/local/bin" "$TARGET/usr/share/xgreeters"
 cp -f "$SRC/greeter/main.py" "$TARGET/usr/local/lib/luke/greeter/main.py"
 cp -f "$SRC/greeter/greeter.css" "$TARGET/usr/local/lib/luke/greeter/greeter.css"
-chown -R root:root "$TARGET/usr/local/lib/luke/greeter"
+cp -f "$SRC/design/assets/brand/luke-mark-1024.png" "$TARGET/usr/local/lib/luke/assets/luke-mark.png"
+cp -f "$SRC/design/assets/wallpapers/luke-wallpaper-1366x768.png" "$TARGET/usr/local/lib/luke/assets/wallpaper.png"
+chown -R root:root "$TARGET/usr/local/lib/luke"
 chmod 644 "$TARGET/usr/local/lib/luke/greeter"/*.py "$TARGET/usr/local/lib/luke/greeter"/*.css
+chmod 644 "$TARGET/usr/local/lib/luke/assets"/*.png
 
 cat > "$TARGET/usr/local/bin/luke-greeter" <<'EOF'
 #!/bin/sh
