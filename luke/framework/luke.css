@@ -1,17 +1,17 @@
-@define-color void   #080C13;
-@define-color veil   #0E1420;
-@define-color surface #131B28;
-@define-color raised  #192334;
-@define-color stroke  #26344B;
-@define-color stroke2 #1D2839;
-@define-color paper   #EAF1F8;
-@define-color ink     #A9B7C9;
-@define-color faint   #6C7B92;
-@define-color lumen   #33E0B0;
-@define-color lumen-deep #159E7E;
-@define-color dusk    #8B8FF0;
-@define-color amber   #F2B14E;
-@define-color ember   #EE6D5D;
+@define-color void   #101413;
+@define-color veil   #171D1B;
+@define-color surface #202825;
+@define-color raised  #2B3430;
+@define-color stroke  #46524B;
+@define-color stroke2 #344039;
+@define-color paper   #F4F1E8;
+@define-color ink     #C3C9BF;
+@define-color faint   #87948A;
+@define-color lumen   #F2C14E;
+@define-color lumen-deep #C58F24;
+@define-color dusk    #74D6C4;
+@define-color amber   #FFB870;
+@define-color ember   #F0776A;
 
 * {
   font-family: "Noto Sans", sans-serif;
@@ -57,7 +57,7 @@ headerbar button.close:hover { background-color: @ember; color: #fff; }
 button {
   background-color: @surface;
   border: 1px solid @stroke;
-  border-radius: 10px;
+  border-radius: 7px;
   padding: 7px 14px;
   color: @paper;
   transition: 140ms ease;
@@ -66,7 +66,7 @@ button {
 button:hover { background-color: @raised; border-color: #33445F; }
 button:active { background-color: #202C3E; }
 button:disabled { opacity: 0.45; }
-button.suggested-action { background-color: @lumen; color: #04302A; border: none; font-weight: 600; }
+button.suggested-action { background-color: @lumen; color: #27200D; border: none; font-weight: 700; }
 button.suggested-action:hover { background-color: #46E7BC; }
 button.destructive-action { background-color: rgba(238, 109, 93, 0.18); color: @ember; border: 1px solid rgba(238, 109, 93, 0.4); }
 button.flat { background: transparent; border: none; color: @ink; }
@@ -85,7 +85,7 @@ button.chip:checked { background-color: @lumen; color: #04302A; border: none; }
 entry, spinbutton {
   background-color: @surface;
   border: 1px solid @stroke;
-  border-radius: 10px;
+  border-radius: 7px;
   padding: 7px 12px;
   color: @paper;
   caret-color: @lumen;
@@ -163,7 +163,7 @@ list row:selected { background-color: rgba(139, 143, 240, 0.16); color: @paper; 
 .cards {
   background-color: @surface;
   border: 1px solid @stroke2;
-  border-radius: 14px;
+  border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
 }
 .cards > * { background: transparent; }
@@ -212,13 +212,13 @@ separator { background-color: @stroke2; }
 /* ---------- shell surface classes ---------- */
 .shell-statusbar { background-color: rgba(8, 12, 19, 0.55); }
 .shell-dock { background-color: rgba(14, 20, 32, 0.66); }
-.shell-tile { border-radius: 20px; }
+.shell-tile { border-radius: 12px; }
 .shell-tile:hover { background-color: rgba(255, 255, 255, 0.06); }
 .shell-tile:selected { box-shadow: 0 0 0 2px rgba(51, 224, 176, 0.6); }
 .shell-sheet {
   background-color: @veil;
   border: 1px solid @stroke2;
-  border-radius: 22px;
+  border-radius: 16px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
 }
 .shell-toast {
@@ -235,7 +235,7 @@ separator { background-color: @stroke2; }
 .shell .home-mid { padding: 0 40px; }
 .shell .greet-label {
   font-size: 40px;
-  font-weight: 700;
+  font-weight: 600;
   color: @paper;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
@@ -243,9 +243,9 @@ separator { background-color: @stroke2; }
 .shell .wordmark { font-size: 14px; font-weight: 700; color: @paper; }
 
 .shell .launcher-entry {
-  background-color: rgba(19, 27, 40, 0.72);
+  background-color: rgba(32, 40, 37, 0.84);
   border: 1px solid @stroke;
-  border-radius: 14px;
+  border-radius: 7px;
   padding: 12px 16px;
   font-size: 14px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);

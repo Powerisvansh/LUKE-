@@ -1,19 +1,19 @@
 PALETTE = {
-    "void": "#080C13",
-    "veil": "#0E1420",
-    "surface": "#131B28",
-    "raised": "#192334",
-    "stroke": "#26344B",
-    "stroke-soft": "#1D2839",
-    "paper": "#EAF1F8",
-    "ink": "#A9B7C9",
-    "faint": "#6C7B92",
-    "lumen": "#33E0B0",
-    "lumen-deep": "#159E7E",
-    "dusk": "#8B8FF0",
-    "amber": "#F2B14E",
-    "ember": "#EE6D5D",
-    "sky": "#57B4E8",
+    "void": "#101413",
+    "veil": "#171D1B",
+    "surface": "#202825",
+    "raised": "#2B3430",
+    "stroke": "#46524B",
+    "stroke-soft": "#344039",
+    "paper": "#F4F1E8",
+    "ink": "#C3C9BF",
+    "faint": "#87948A",
+    "lumen": "#F2C14E",
+    "lumen-deep": "#C58F24",
+    "dusk": "#74D6C4",
+    "amber": "#FFB870",
+    "ember": "#F0776A",
+    "sky": "#80BFE0",
 }
 
 FONTS = {
@@ -23,10 +23,10 @@ FONTS = {
 }
 
 RADII = {
-    "btn": 10,
-    "card": 14,
-    "tile": 18,
-    "sheet": 22,
+    "btn": 7,
+    "card": 10,
+    "tile": 12,
+    "sheet": 16,
     "pill": 999,
 }
 
