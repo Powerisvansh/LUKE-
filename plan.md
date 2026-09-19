@@ -6,6 +6,6 @@ Phase 4: fullscreen LukeShell
 Phase 5: app framework v2 + registry (manifest metadata, assets manifest, install/uninstall)
 Phase 6: real system apps polish (settings, monitor, about fix cairo import)
 Phase 7: Luke Browser (WebKitGTK staged install)
-Phase 8: Luke App Store (download + install from manifest)
+Phase 8: Luke App Store (catalog, checksum-verified download, install/update/uninstall)
 Phase 9: motion/polish pass
 Phase 10: performance + acceptance testing on device

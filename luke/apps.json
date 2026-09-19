@@ -341,5 +341,29 @@
     "system": true,
     "depends": [],
     "tags": []
+  },
+  {
+    "id": "store",
+    "name": "App Store",
+    "exec": [
+      "python3",
+      "~/.luke/apps/store/main.py"
+    ],
+    "icon": "luke:store",
+    "color": "#31505e",
+    "category": "System",
+    "desc": "Browse and install Luke applications",
+    "version": "1.0",
+    "author": "Luke",
+    "keywords": [
+      "apps",
+      "install",
+      "download",
+      "catalog",
+      "updates"
+    ],
+    "system": true,
+    "depends": [],
+    "tags": []
   }
 ]

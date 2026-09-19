@@ -97,6 +97,37 @@ Some apps interact with desktop services such as NetworkManager, PulseAudio or
 LightDM and will only expose their complete functionality inside a matching
 desktop session.
 
+## App Store catalog
+
+The built-in App Store reads `catalog/apps.json` from the configured catalog
+URL. The default is the raw catalog in this GitHub repository; override it for
+development with `LUKE_APP_CATALOG`.
+
+Each catalog entry needs an HTTPS archive URL and an SHA-256 checksum:
+
+```json
+{
+  "version": 1,
+  "apps": [
+    {
+      "id": "example",
+      "name": "Example",
+      "version": "1.0",
+      "author": "Luke",
+      "desc": "An example Luke app",
+      "url": "https://example.org/example.tar.gz",
+      "sha256": "..."
+    }
+  ]
+}
+```
+
+The archive must contain an `app.json` descriptor and its application files.
+The store validates the app ID, checksum, and archive paths before installation.
+Installed bundles are kept in `~/.luke/store/apps` so normal source deployment
+does not remove them. The store supports install, update, and removal of
+non-system bundles.
+
 ## Validate changes
 
 Run the same syntax check used by deployment:

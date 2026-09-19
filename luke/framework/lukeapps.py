@@ -14,11 +14,16 @@ v2 additions over v1:
 """
 
 import json
+import hashlib
 import os
 import shlex
 import shutil
 import subprocess
 import sys
+import tarfile
+import tempfile
+import urllib.request
+import zipfile
 
 from lukepaths import ROOT
 from lukeassets import icon as asset_icon
@@ -27,8 +32,11 @@ MANIFEST = os.path.join(ROOT, "apps.json")
 STATE = os.path.join(ROOT, "state")
 RECENTS = os.path.join(STATE, "recents.json")
 FAVORITES = os.path.join(STATE, "favorites.json")
-APPS_HOME = os.path.join(ROOT, "apps")
+APPS_HOME = os.path.join(ROOT, "store", "apps")
 MAX_RECENTS = 8
+DEFAULT_CATALOG_URL = (
+    "https://raw.githubusercontent.com/Powerisvansh/LUKE-/master/"
+    "catalog/apps.json")
 
 DEFAULT_FAVORITES = ["terminal", "files", "editor"]
 
@@ -257,7 +265,7 @@ def read_bundle_descriptor(path):
     return data
 
 
-def install_bundle(path):
+def install_bundle(path, replace=False):
     """Copy a Luke app bundle into the user's apps dir and register it.
 
     Returns (ok, reason). The bundle must contain an app.json descriptor.
@@ -266,11 +274,15 @@ def install_bundle(path):
     if descriptor is None:
         return False, "No app.json descriptor in the bundle."
     app_id = descriptor["id"]
-    if get_app(app_id) is not None:
+    current = get_app(app_id)
+    if current is not None and not replace:
         return False, "An app with id '%s' is already registered." % app_id
+    if current is not None and current.system:
+        return False, "'%s' is built into Luke and cannot be replaced." % app_id
 
     dest = os.path.join(APPS_HOME, app_id)
     try:
+        os.makedirs(APPS_HOME, exist_ok=True)
         if os.path.isdir(dest):
             shutil.rmtree(dest)
         shutil.copytree(path, dest)
@@ -289,7 +301,7 @@ def install_bundle(path):
     entry["exec"] = ["python3", os.path.join("~/.luke/apps", app_id, "main.py")]
     entry.setdefault("system", False)
 
-    raw = _raw_manifest()
+    raw = [e for e in _raw_manifest() if e.get("id") != app_id]
     raw.append(entry)
     _save_json(MANIFEST, raw)
     refresh()
@@ -302,6 +314,98 @@ def install_bundle(path):
     except Exception:
         pass
     return True, app_id
+
+
+def fetch_catalog(url=None, timeout=20):
+    """Fetch a remote catalog and return its validated app entries."""
+    url = url or os.environ.get("LUKE_APP_CATALOG", DEFAULT_CATALOG_URL)
+    request = urllib.request.Request(url, headers={"User-Agent": "Luke-App-Store/1"})
+    try:
+        with urllib.request.urlopen(request, timeout=timeout) as response:
+            data = json.loads(response.read().decode("utf-8"))
+    except (OSError, ValueError, UnicodeError) as err:
+        return [], "Could not load the app catalog: %s" % err
+    entries = data.get("apps", []) if isinstance(data, dict) else data
+    if not isinstance(entries, list):
+        return [], "The app catalog has an invalid format."
+    valid = []
+    for entry in entries:
+        if (isinstance(entry, dict) and entry.get("id") and
+                entry.get("name") and entry.get("url")):
+            valid.append(entry)
+    return valid, None
+
+
+def _safe_extract(archive, destination):
+    """Extract an archive without allowing paths outside destination."""
+    members = archive.getmembers() if isinstance(archive, tarfile.TarFile) else archive.infolist()
+    for member in members:
+        name = member.name if isinstance(member, tarfile.TarInfo) else member.filename
+        target = os.path.abspath(os.path.join(destination, name))
+        if os.path.commonpath([destination, target]) != os.path.abspath(destination):
+            raise ValueError("Archive contains an unsafe path.")
+    archive.extractall(destination)
+
+
+def _find_bundle(root):
+    for current, _dirs, files in os.walk(root):
+        if "app.json" in files:
+            return current
+    return None
+
+
+def download_bundle(entry, progress=None, timeout=60):
+    """Download and unpack one catalog entry, returning a temporary bundle path."""
+    url = entry.get("url")
+    if not url:
+        raise ValueError("Catalog entry has no bundle URL.")
+    root = tempfile.mkdtemp(prefix="luke-store-")
+    archive_path = os.path.join(root, "bundle.archive")
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "Luke-App-Store/1"})
+        digest = hashlib.sha256()
+        total = int(entry.get("size", 0) or 0)
+        received = 0
+        with urllib.request.urlopen(request, timeout=timeout) as response, \
+                open(archive_path, "wb") as output:
+            while True:
+                chunk = response.read(64 * 1024)
+                if not chunk:
+                    break
+                output.write(chunk)
+                digest.update(chunk)
+                received += len(chunk)
+                if progress:
+                    progress(received, total)
+        expected = entry.get("sha256")
+        if expected and digest.hexdigest().lower() != expected.lower():
+            raise ValueError("Downloaded bundle checksum does not match the catalog.")
+
+        extract_root = os.path.join(root, "bundle")
+        os.makedirs(extract_root)
+        try:
+            with tarfile.open(archive_path, "r:*") as archive:
+                _safe_extract(archive, extract_root)
+        except tarfile.ReadError:
+            with zipfile.ZipFile(archive_path) as archive:
+                _safe_extract(archive, extract_root)
+        bundle = _find_bundle(extract_root)
+        descriptor = read_bundle_descriptor(bundle) if bundle else None
+        if descriptor is None or descriptor.get("id") != entry.get("id"):
+            raise ValueError("Downloaded bundle does not match the catalog entry.")
+        return root, bundle
+    except Exception:
+        shutil.rmtree(root, ignore_errors=True)
+        raise
+
+
+def install_catalog_app(entry, replace=False, progress=None):
+    """Download, validate, and install a catalog entry."""
+    root, bundle = download_bundle(entry, progress=progress)
+    try:
+        return install_bundle(bundle, replace=replace)
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
 
 
 def uninstall(app_id):
