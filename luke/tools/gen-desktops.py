@@ -25,9 +25,13 @@ def write_desktops():
         if app_id in SKIP or item.get("hidden", False):
             continue
         icon = item.get("icon", "appgrid")
-        exec_cmd = " ".join(
+        cmd = [
             os.path.expanduser(a) if a.startswith("~") else a
-            for a in item["exec"])
+            for a in item["exec"]
+        ]
+        exec_cmd = " ".join(cmd)
+        if cmd and os.path.basename(cmd[0]).startswith("python"):
+            exec_cmd = "env PYTHONPATH=%s " % os.path.join(LUKE, "framework") + exec_cmd
         content = (
             "[Desktop Entry]\n"
             "Type=Application\n"
