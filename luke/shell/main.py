@@ -15,6 +15,7 @@ recalled with Super/Home or the dock.
 Runs user-level from ~/.luke; no root required.
 """
 
+import cairo
 import os
 import re
 import shutil
@@ -127,9 +128,8 @@ class ShellWindow(Gtk.Window):
 
     def _build_home(self):
         root = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        root.get_style_context().add_class("home")
+        root.get_style_context().add_class("shell-home")
 
-        # ---- header
         header = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         header.set_margin_start(28)
         header.set_margin_end(28)
@@ -154,7 +154,7 @@ class ShellWindow(Gtk.Window):
         brand.pack_start(word, False, False, 0)
         header.pack_start(brand, False, False, 0)
 
-        status = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=14)
+        status = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         status.set_halign(Gtk.Align.END)
 
         self.wifi_btn = self._status_button(
@@ -179,58 +179,82 @@ class ShellWindow(Gtk.Window):
         header.pack_end(status, False, False, 0)
         root.pack_start(header, False, False, 0)
 
-        # ---- centre content
-        mid = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        mid.set_halign(Gtk.Align.CENTER)
-        mid.set_valign(Gtk.Align.CENTER)
-        mid.get_style_context().add_class("home-mid")
+        body = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=16)
+        body.set_halign(Gtk.Align.CENTER)
+        body.set_valign(Gtk.Align.CENTER)
+        body.set_margin_top(22)
+        body.set_margin_bottom(20)
+        body.set_size_request(1180, -1)
+        body.get_style_context().add_class("shell-body")
 
         self.greet_label = Gtk.Label(label="")
         self.greet_label.get_style_context().add_class("greet-label")
-        mid.pack_start(self.greet_label, False, False, 0)
+        self.greet_label.set_halign(Gtk.Align.START)
+        body.pack_start(self.greet_label, False, False, 0)
 
-        entry_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
-        entry_row.set_margin_top(18)
-        entry_row.set_margin_bottom(6)
+        search_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
+        search_row.set_halign(Gtk.Align.START)
         self.launch_entry = Gtk.Entry()
-        self.launch_entry.set_placeholder_text("Search applications…")
-        self.launch_entry.set_size_request(470, -1)
+        self.launch_entry.set_placeholder_text("Search applications, files, settings…")
+        self.launch_entry.set_size_request(660, -1)
         self.launch_entry.get_style_context().add_class("launcher-entry")
         self.launch_entry.connect("focus-in-event", lambda *_a: self.show_launcher())
         self.launch_entry.connect("activate", self._entry_enter)
-        go_btn = Gtk.Button(label="Apps")
+        go_btn = Gtk.Button(label="Open")
         go_btn.get_style_context().add_class("suggested-action")
         go_btn.connect("clicked", lambda _w: self.show_launcher())
-        entry_row.pack_start(self.launch_entry, False, False, 0)
-        entry_row.pack_start(go_btn, False, False, 0)
-        mid.pack_start(entry_row, False, False, 0)
+        search_row.pack_start(self.launch_entry, False, False, 0)
+        search_row.pack_start(go_btn, False, False, 0)
+        body.pack_start(search_row, False, False, 0)
 
-        favs_lbl = self._section_label("Favorites")
-        favs_lbl.set_margin_top(30)
+        self.cat_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
+        self.cat_row.set_halign(Gtk.Align.START)
+        self.cat_row.set_margin_top(4)
+        body.pack_start(self.cat_row, False, False, 0)
+
         self.favs_box = Gtk.FlowBox()
         self.favs_box.set_selection_mode(Gtk.SelectionMode.NONE)
         self.favs_box.set_homogeneous(False)
-        self.favs_box.set_row_spacing(0)
-        self.favs_box.set_column_spacing(0)
-        mid.pack_start(favs_lbl, False, False, 0)
-        mid.pack_start(self.favs_box, False, False, 0)
+        self.favs_box.set_row_spacing(18)
+        self.favs_box.set_column_spacing(18)
+        self.favs_box.set_valign(Gtk.Align.START)
+        self.favs_box.set_halign(Gtk.Align.START)
+        self.favs_box.set_max_children_per_line(6)
+        self.favs_box.set_min_children_per_line(3)
+        self.favs_box.get_style_context().add_class("shell-app-grid")
 
-        rec_lbl = self._section_label("Recent")
-        rec_lbl.set_margin_top(22)
         self.rec_box = Gtk.FlowBox()
         self.rec_box.set_selection_mode(Gtk.SelectionMode.NONE)
         self.rec_box.set_homogeneous(False)
-        self.rec_box.set_row_spacing(0)
-        self.rec_box.set_column_spacing(0)
-        mid.pack_start(rec_lbl, False, False, 0)
-        mid.pack_start(self.rec_box, False, False, 0)
+        self.rec_box.set_row_spacing(18)
+        self.rec_box.set_column_spacing(18)
+        self.rec_box.set_valign(Gtk.Align.START)
+        self.rec_box.set_halign(Gtk.Align.START)
+        self.rec_box.set_max_children_per_line(6)
+        self.rec_box.set_min_children_per_line(3)
+        self.rec_box.get_style_context().add_class("shell-app-grid")
+
+        labels_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        labels_row.set_halign(Gtk.Align.START)
+        labels_row.set_margin_top(18)
+        favs_lbl = self._section_label("Favorites")
+        rec_lbl = self._section_label("Recent")
+        rec_lbl.set_margin_start(24)
+        labels_row.pack_start(favs_lbl, False, False, 0)
+        labels_row.pack_start(rec_lbl, False, False, 0)
+        body.pack_start(labels_row, False, False, 0)
+
+        grids = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=14)
+        grids.set_halign(Gtk.Align.FILL)
+        grids.pack_start(self.favs_box, False, False, 0)
+        grids.pack_start(self.rec_box, False, False, 0)
+        body.pack_start(grids, False, False, 0)
 
         self.blank_footer = Gtk.Label(label=" ")
-        self.blank_footer.set_margin_top(26)
-        mid.pack_start(self.blank_footer, False, False, 0)
-        root.pack_start(mid, True, True, 0)
+        self.blank_footer.set_margin_top(8)
+        body.pack_start(self.blank_footer, False, False, 0)
+        root.pack_start(body, True, True, 0)
 
-        # ---- dock
         dock = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
         dock.set_halign(Gtk.Align.CENTER)
         dock.set_margin_bottom(18)
@@ -265,6 +289,7 @@ class ShellWindow(Gtk.Window):
 
         self._fill_dock()
         self._fill_home_rows()
+        self._build_home_categories()
         return root
 
     def _status_button(self, icon_name, tip, handler):
@@ -407,21 +432,30 @@ class ShellWindow(Gtk.Window):
         btn.get_style_context().add_class("shell-tile")
         if compact:
             btn.set_size_request(58, 58)
+        else:
+            btn.set_size_request(180, 120)
         btn.set_tooltip_text(app.desc or app.name)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
         box.set_halign(Gtk.Align.CENTER)
+        box.set_valign(Gtk.Align.CENTER)
         img = Gtk.Image()
-        path = app.icon_path(40 if compact else 56)
+        path = app.icon_path(40 if compact else 58)
         if path:
             img.set_from_file(path)
         else:
             img.set_from_icon_name(app.icon_name(), Gtk.IconSize.DIALOG)
-            img.set_pixel_size(40 if compact else 56)
+            img.set_pixel_size(40 if compact else 58)
         box.pack_start(img, False, False, 0)
         if not compact:
             name = Gtk.Label(label=app.name)
             name.get_style_context().add_class("tile-name")
+            name.set_ellipsize(3)
+            name.set_line_wrap(False)
             box.pack_start(name, False, False, 0)
+            desc = Gtk.Label(label=app.category)
+            desc.get_style_context().add_class("tile-meta")
+            desc.set_ellipsize(3)
+            box.pack_start(desc, False, False, 0)
         btn.add(box)
         btn.luke_app = app
         btn.connect("clicked", self._launch)
@@ -460,6 +494,17 @@ class ShellWindow(Gtk.Window):
             app = lukeapps.get_app(rid)
             if app and app.id not in lukeapps.favorites():
                 self.rec_box.add(self._tile(app))
+        self.favs_box.show_all()
+        self.rec_box.show_all()
+
+    def _build_home_categories(self):
+        categories = ["All Apps", "Favorites", "Productivity", "Internet", "System", "Media", "Development", "Utilities", "Games"]
+        for label in categories:
+            btn = Gtk.Button(label=label)
+            btn.get_style_context().add_class("shell-category")
+            btn.connect("clicked", lambda _w, text=label: self.show_launcher())
+            self.cat_row.pack_start(btn, False, False, 0)
+        self.cat_row.show_all()
 
     # ---------------------------------------------------------- launcher
     def _build_cats(self):
@@ -735,17 +780,58 @@ class ShellWindow(Gtk.Window):
     def _draw_bg(self, _w, cr):
         w, h = self.get_allocated_width(), self.get_allocated_height()
         try:
-            cr.set_source_rgb(0.031, 0.049, 0.075)
-            cr.rectangle(0, 0, w, h)
-            cr.fill()
-            cr.set_source_rgba(0.20, 0.62, 0.56, 0.10)
-            cr.arc(w * 0.85, h * 0.12, h * 0.5, 0, 6.2832)
-            cr.fill()
-            cr.set_source_rgba(0.36, 0.22, 0.78, 0.08)
-            cr.arc(w * 0.10, h * 0.95, h * 0.45, 0, 6.2832)
-            cr.fill()
+            grad = cr.get_target().create_similar(cairo.CONTENT_COLOR_ALPHA, int(w), int(h))
+            gc = cairo.Context(grad)
+            bg = cairo.LinearGradient(0, 0, 0, h)
+            bg.add_color_stop_rgb(0.0, 0.03, 0.08, 0.18)
+            bg.add_color_stop_rgb(0.38, 0.06, 0.12, 0.26)
+            bg.add_color_stop_rgb(0.70, 0.12, 0.18, 0.33)
+            bg.add_color_stop_rgb(1.0, 0.06, 0.09, 0.15)
+            gc.set_source(bg)
+            gc.paint()
+
+            glows = [
+                (w * 0.78, h * 0.18, h * 0.48, (0.74, 0.92, 1.0, 0.40)),
+                (w * 0.24, h * 0.72, h * 0.42, (0.42, 0.76, 1.0, 0.22)),
+                (w * 0.62, h * 0.82, h * 0.52, (0.93, 0.71, 1.0, 0.22)),
+            ]
+            for x, y, radius, rgba in glows:
+                g = cairo.RadialGradient(x, y, 0, x, y, radius)
+                g.add_color_stop_rgba(0.0, *rgba)
+                g.add_color_stop_rgba(1.0, rgba[0], rgba[1], rgba[2], 0.0)
+                gc.set_source(g)
+                gc.paint()
+
+            gc.set_source_rgba(0.02, 0.04, 0.08, 0.34)
+            gc.move_to(0, h * 0.72)
+            gc.line_to(w * 0.12, h * 0.46)
+            gc.line_to(w * 0.23, h * 0.60)
+            gc.line_to(w * 0.42, h * 0.42)
+            gc.line_to(w * 0.56, h * 0.60)
+            gc.line_to(w * 0.72, h * 0.48)
+            gc.line_to(w, h * 0.72)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.close_path()
+            gc.fill()
+
+            gc.set_source_rgba(0.08, 0.15, 0.26, 0.30)
+            gc.move_to(0, h * 0.82)
+            gc.line_to(w * 0.18, h * 0.74)
+            gc.line_to(w * 0.34, h * 0.80)
+            gc.line_to(w * 0.52, h * 0.70)
+            gc.line_to(w * 0.74, h * 0.82)
+            gc.line_to(w, h * 0.78)
+            gc.line_to(w, h)
+            gc.line_to(0, h)
+            gc.close_path()
+            gc.fill()
+
+            cr.set_source_surface(grad, 0, 0)
+            cr.paint()
         except Exception:
-            pass
+            cr.set_source_rgb(0.03, 0.05, 0.09)
+            cr.paint()
         return False
 
     def _toast(self, text):

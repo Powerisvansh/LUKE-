@@ -170,6 +170,19 @@ The boot script does not modify firmware, partition tables, or the kernel. It
 backs up the GRUB configuration and keeps recovery kernels reachable. The root
 filesystem and data partition are not reformatted by any Luke deployment script.
 
+## Build a bootable USB
+
+For a full live USB image, use the packaged installer at [luke/boot/build-live-usb.sh](luke/boot/build-live-usb.sh):
+
+```bash
+sudo bash luke/boot/build-live-usb.sh --device /dev/sdX --username aman --suite bookworm
+```
+
+This script creates a GPT USB layout with an EFI partition and a root filesystem,
+installs Debian minbase, copies the Luke project into the live system, and
+installs GRUB for UEFI boot. It is designed for a removable USB target and keeps
+the source tree in the live home directory for direct use on first boot.
+
 ## Development
 
 Requirements depend on the target distribution, but development normally needs
