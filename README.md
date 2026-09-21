@@ -244,9 +244,6 @@ live in `~/.luke/store/apps`, outside the source-synced application directory.
 - [ ] Add notification center and task switching polish
 - [ ] Complete device deployment and acceptance testing
 
-The detailed roadmap is in [plan.md](plan.md), while the system audit and
-recovery strategy are in [LUKE-OS-ANALYSIS.md](LUKE-OS-ANALYSIS.md).
-
 ## License
 
 No license has been declared yet. Until one is added, treat the repository as

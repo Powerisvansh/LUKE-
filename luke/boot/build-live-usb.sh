@@ -82,8 +82,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
-ROOT_PART="${USB_DEVICE}2"
-EFI_PART="${USB_DEVICE}1"
+ROOT_PART="${USB_DEVICE}3"
+EFI_PART="${USB_DEVICE}2"
 
 if lsblk -no NAME "$USB_DEVICE" | grep -q '.*'; then
   echo "==> Warning: this script will overwrite the selected USB device: $USB_DEVICE"
@@ -92,10 +92,24 @@ if lsblk -no NAME "$USB_DEVICE" | grep -q '.*'; then
 fi
 
 parted -s "$USB_DEVICE" mklabel gpt
-parted -s "$USB_DEVICE" mkpart ESP fat32 1MiB 1025MiB
-parted -s "$USB_DEVICE" mkpart root ext4 1025MiB 100%
-parted -s "$USB_DEVICE" set 1 esp on
-parted -s "$USB_DEVICE" set 1 boot on
+parted -s "$USB_DEVICE" mkpart biospart 1MiB 2MiB
+parted -s "$USB_DEVICE" set 1 bios_grub on
+parted -s "$USB_DEVICE" mkpart ESP fat32 2MiB 1026MiB
+parted -s "$USB_DEVICE" set 2 esp on
+parted -s "$USB_DEVICE" set 2 boot on
+parted -s "$USB_DEVICE" mkpart root ext4 1026MiB 100%
+
+# The kernel may take a moment to re-read the new partition table.
+partprobe "$USB_DEVICE" >/dev/null 2>&1 || true
+udevadm settle >/dev/null 2>&1 || true
+for _ in $(seq 1 30); do
+  [[ -b "$EFI_PART" && -b "$ROOT_PART" ]] && break
+  sleep 1
+done
+[[ -b "$EFI_PART" && -b "$ROOT_PART" ]] || {
+  echo "Partition nodes not ready: $EFI_PART / $ROOT_PART" >&2
+  exit 1
+}
 
 mkfs.vfat -F32 "$EFI_PART"
 mkfs.ext4 -F "$ROOT_PART"
@@ -129,11 +143,17 @@ set -Eeuo pipefail
 export DEBIAN_FRONTEND=noninteractive
 export LANG=C
 
+cat > /etc/apt/sources.list <<'SOURCES'
+deb http://deb.debian.org/debian bookworm main contrib non-free-firmware
+deb http://security.debian.org/debian-security bookworm-security main contrib non-free-firmware
+deb http://deb.debian.org/debian bookworm-updates main contrib non-free-firmware
+SOURCES
+
 apt-get update
 apt-get install -y --no-install-recommends \
   systemd-sysv dbus sudo network-manager wpasupplicant ca-certificates locales \
-  linux-image-amd64 linux-base firmware-linux-free initramfs-tools \
-  grub-efi-amd64 dosfstools xfsprogs btrfs-progs ntfs-3g git python3 python3-cairo \
+  linux-image-amd64 linux-base firmware-linux firmware-iwlwifi firmware-realtek initramfs-tools \
+  grub-efi-amd64 grub-pc-bin dosfstools xfsprogs btrfs-progs ntfs-3g git python3 python3-cairo \
   python3-gi gir1.2-gtk-3.0 gir1.2-webkit2-4.1 lightdm plymouth \
   pulseaudio-utils xauth dbus-x11
 
@@ -212,15 +232,15 @@ fi
 
 chroot "$TARGET_DIR" /bin/bash /root/luke-live.sh
 
-# Install the bootloader with both EFI and legacy fallback support.
+# Install the bootloader with both EFI and legacy BIOS support so the image
+# boots on UEFI machines and this laptop's legacy BIOS mode.
 chroot "$TARGET_DIR" /bin/bash -lc '
-  if [ -d /boot/grub/themes/luke ]; then
-    echo "Luke grub theme installed"
-  fi
   update-grub
   grub-install --target=x86_64-efi --efi-directory=/boot/efi --bootloader-id=Luke --recheck --removable
   update-initramfs -u -k all || true
 '
+echo "==> Installing legacy BIOS bootloader on $USB_DEVICE"
+chroot "$TARGET_DIR" /bin/bash -c "grub-install --target=i386-pc --boot-directory=/boot --recheck '$USB_DEVICE'"
 
 [[ -f "$TARGET_DIR/boot/efi/EFI/BOOT/BOOTX64.EFI" ]] || {
   echo "EFI bootloader was not written to $EFI_PART" >&2
