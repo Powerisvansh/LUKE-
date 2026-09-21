@@ -11,6 +11,10 @@
 #define AURORA_SCREEN_W  1024u
 #define AURORA_SCREEN_H  768u
 
+/* Default OS user account (used by the future lock/login service). */
+#define AURORA_DEFAULT_USER "aurora"
+#define AURORA_DEFAULT_PASS "aurora"
+
 /* Boot-params block written by the Aurora bootloader at 0x8000. */
 #define BOOT_PARAMS_ADDR 0x8000u
 #define BOOT_MAGIC       0x41555241u   /* "AURA" */
