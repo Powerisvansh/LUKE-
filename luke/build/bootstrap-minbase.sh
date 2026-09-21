@@ -54,7 +54,12 @@ echo 'luke' > /etc/hostname
 printf '127.0.0.1 localhost\n127.0.1.1 luke\n' > /etc/hosts
 locale-gen en_US.UTF-8
 useradd --create-home --shell /bin/bash --groups sudo,video,render,input '$USERNAME' 2>/dev/null || true
-# useradd leaves the account locked until the administrator sets a password.
+# Single-user personal system: no password at the greeter. The nopasswdlogin
+# group is LightDM's built-in passwordless mechanism; passwd -d covers PAM
+# setups without nullok.
+groupadd -f nopasswdlogin
+usermod -aG nopasswdlogin '$USERNAME'
+passwd -d '$USERNAME' 2>/dev/null || true
 install -d -m 0755 /data
 DATA_DEVICE='$DATA_DEVICE'
 if [[ -e "\$DATA_DEVICE" ]]; then
@@ -67,4 +72,4 @@ rm -f /root/luke-stage1.sh
 EOF
 chmod 700 "$TARGET/root/luke-stage1.sh"
 chroot "$TARGET" /root/luke-stage1.sh
-echo "Rootfs prepared at $TARGET. Set a password and install the bootloader before first boot."
+echo "Rootfs prepared at $TARGET. Install the bootloader before first boot; the account signs in without a password."

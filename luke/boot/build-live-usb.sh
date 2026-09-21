@@ -165,6 +165,12 @@ HOSTS
 
 locale-gen en_US.UTF-8
 useradd --create-home --shell /bin/bash --groups sudo,video,render,input '$USERNAME' 2>/dev/null || true
+# Luke is a single-user personal system: no password at the greeter.
+# nopasswdlogin is LightDM's built-in passwordless mechanism; clearing the
+# password covers PAM setups without nullok.
+groupadd -f nopasswdlogin
+usermod -aG nopasswdlogin '$USERNAME'
+passwd -d '$USERNAME' 2>/dev/null || true
 install -d -m 0755 /home/$USERNAME/.luke
 
 cat > /etc/fstab <<'FSTAB'

@@ -205,25 +205,9 @@ class GreeterWindow(Gtk.Window):
         inner.pack_start(self._field("Username"), False, False, 0)
         self.user_entry = Gtk.Entry()
         self.user_entry.set_width_chars(22)
+        self.user_entry.set_activates_default(True)
+        self.user_entry.connect("activate", lambda _e: self._submit())
         inner.pack_start(self.user_entry, False, False, 0)
-
-        inner.pack_start(self._field("Password"), False, False, 0)
-        pass_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        self.pass_entry = Gtk.Entry()
-        self.pass_entry.set_visibility(False)
-        self.pass_entry.set_activates_default(True)
-        self.pass_entry.connect("activate", lambda _e: self._submit())
-        self.toggle = Gtk.Button(label="Show")
-        self.toggle.set_size_request(68, -1)
-        self.toggle.get_style_context().add_class("ghost")
-        self.toggle.connect("clicked", self._on_toggle_pass)
-        pass_row.pack_start(self.pass_entry, True, True, 0)
-        pass_row.pack_start(self.toggle, False, False, 0)
-        inner.pack_start(pass_row, False, False, 0)
-
-        self.caps_label = Gtk.Label(label="Caps Lock is on")
-        self.caps_label.get_style_context().add_class("caps-label")
-        inner.pack_start(self.caps_label, False, False, 0)
 
         self.spinner = Gtk.Spinner()
         self.spinner.set_visible(False)
@@ -243,7 +227,6 @@ class GreeterWindow(Gtk.Window):
 
         card.pack_start(inner, True, True, 0)
         center.pack_start(card, False, False, 0)
-        self.user_entry.connect("activate", lambda _e: self.pass_entry.grab_focus())
 
         power = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         power.set_margin_start(40)
@@ -266,7 +249,6 @@ class GreeterWindow(Gtk.Window):
         self._setup_user()
         self._update_clock()
         GLib.timeout_add(1000, self._update_clock)
-        GLib.timeout_add(1000, self._caps_check)
         self.connect("key-press-event", self._on_key)
         self.connect("size-allocate", self._resize)
 
@@ -310,10 +292,10 @@ class GreeterWindow(Gtk.Window):
             user = self._q_users[0]
             self.user_entry.set_text(user.get_name())
             self.welcome.set_text("Welcome")
-            self.subtitle.set_text(user.get_display_name() or user.get_name())
+            self.subtitle.set_text("Press Enter to sign in")
             self.avatar.add(
                 Avatar((user.get_name() or "?")[0].upper(), user.get_name(), 88))
-            self.pass_entry.grab_focus()
+            self.login_btn.grab_focus()
         elif not HAVE_LIGHTDM:
             self.err_label.set_text(
                 "The LightDM bindings are missing.\nRun apply-root.sh and this "
@@ -327,18 +309,6 @@ class GreeterWindow(Gtk.Window):
         self.date_label.set_text(time.strftime("%A · %d %B %Y", now))
         return True
 
-    def _caps_check(self):
-        keymap = Gdk.Keymap.get_default()
-        if keymap is not None:
-            self.caps_label.set_visible(keymap.get_caps_lock_state())
-        return True
-
-    def _on_toggle_pass(self, _w):
-        visible = self.pass_entry.get_visibility()
-        self.pass_entry.set_visibility(not visible)
-        self.toggle.set_label("Hide" if not visible else "Show")
-        self.pass_entry.grab_focus()
-
     def _on_key(self, _w, event):
         key = Gdk.keyval_name(event.keyval)
         if key == "Tab":
@@ -348,7 +318,7 @@ class GreeterWindow(Gtk.Window):
 
     def _cycle_focus(self):
         focused = self.get_focus()
-        targets = [self.user_entry, self.pass_entry, self.login_btn]
+        targets = [self.user_entry, self.login_btn]
         idx = 0
         for i, w in enumerate(targets):
             if focused is w:
@@ -368,7 +338,6 @@ class GreeterWindow(Gtk.Window):
         self.spinner.set_visible(True)
         self.spinner.start()
         self.login_btn.set_sensitive(False)
-        self.pass_entry.set_sensitive(False)
         self.user_entry.set_sensitive(False)
 
         self.greeter = LightDM.get_greeter()
@@ -386,10 +355,7 @@ class GreeterWindow(Gtk.Window):
                 self._reset("Could not start sign-in: %s" % err)
 
     def _on_prompt(self, _g, _text, prompt_type):
-        if prompt_type == LightDM.PromptType.SECRET:
-            self.greeter.respond(self.pass_entry.get_text())
-        else:
-            self.greeter.respond("")
+        self.greeter.respond("")
 
     def _on_message(self, _g, text, message_type):
         if text and message_type == LightDM.MessageType.ERROR:
@@ -413,18 +379,16 @@ class GreeterWindow(Gtk.Window):
             else:
                 self._reset("The session could not be started.")
         else:
-            self._reset("Incorrect username or password.")
+            self._reset("Sign-in failed. Check the username.")
 
     def _reset(self, message):
         self.spinner.stop()
         self.spinner.set_visible(False)
         self.login_btn.set_sensitive(True)
-        self.pass_entry.set_sensitive(True)
         self.user_entry.set_sensitive(True)
         if message:
             self.err_label.set_text(message)
-        self.pass_entry.set_text("")
-        self.pass_entry.grab_focus()
+        self.login_btn.grab_focus()
 
     def _power(self, action):
         if not HAVE_LIGHTDM:

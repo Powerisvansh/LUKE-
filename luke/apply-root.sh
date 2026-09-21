@@ -9,8 +9,9 @@
 #        gir1.2-lightdm-1   -> LightDM Python bindings for the custom greeter
 #        python3-cairo      -> cairo module needed for drawing (avatar, graphs)
 #        pulseaudio-utils   -> pactl, so the Settings app can set volume
-#   2. Installs the custom Luke greeter (login screen) into /usr/local.
-#   3. Registers the greeter with LightDM and turns off auto-login.
+#   2. Clears the login password for $LUKE_USER so the greeter is passwordless.
+#   3. Installs the custom Luke greeter (login screen) into /usr/local.
+#   4. Registers the greeter with LightDM and turns off auto-login.
 #
 # It is idempotent: safe to run twice.
 
@@ -18,6 +19,7 @@ set -euo pipefail
 
 SRC="$(cd "$(dirname "$0")" && pwd)"
 TARGET="${1:-/media/aman/LUKE-ROOT}"
+LUKE_USER="${LUKE_USER:-aman}"
 
 [ -d "$TARGET/etc" ] || { echo "ERROR: Luke root not found at $TARGET"; exit 1; }
 [ -x "$TARGET/usr/bin/python3" ] || { echo "ERROR: no python3 inside $TARGET"; exit 1; }
@@ -34,6 +36,18 @@ chroot "$TARGET" /bin/bash -c '
   apt-get update -q
   apt-get install -y --no-install-recommends gir1.2-lightdm-1 python3-cairo pulseaudio-utils
 '
+
+echo "==> enabling passwordless sign-in for $LUKE_USER"
+chroot "$TARGET" /bin/bash -c "
+  if id -u '$LUKE_USER' >/dev/null 2>&1; then
+    groupadd -f nopasswdlogin
+    usermod -aG nopasswdlogin '$LUKE_USER'
+    passwd -d '$LUKE_USER' >/dev/null 2>&1 || true
+    echo '    password cleared and nopasswdlogin set for $LUKE_USER'
+  else
+    echo '    user $LUKE_USER not found; leaving passwords unchanged' >&2
+  fi
+"
 
 echo "==> installing the Luke greeter (login screen)"
 mkdir -p "$TARGET/usr/local/lib/luke/greeter" "$TARGET/usr/local/lib/luke/assets" "$TARGET/usr/local/bin" "$TARGET/usr/share/xgreeters"
@@ -75,6 +89,7 @@ echo
 echo "==> done."
 echo "    Packages installed: gir1.2-lightdm-1, pulseaudio-utils"
 echo "    Greeter installed at /usr/local/lib/luke/greeter"
+echo "    Passwordless sign-in enabled for $LUKE_USER"
 echo "    lightdm.conf updated (auto-login removed, greeter-session=luke)."
 echo "    Backup of the old lightdm.conf: $CONF.lukebak"
 echo
