@@ -1,3 +1,0 @@
-#!/bin/sh
-# Start the LukeShell (used at login by the autostart entry).
-exec /usr/bin/python3 "$HOME/.luke/shell/main.py" "$1"

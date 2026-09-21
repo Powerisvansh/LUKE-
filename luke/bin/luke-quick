@@ -1,3 +1,0 @@
-#!/bin/sh
-# Open the LukeShell quick-settings sheet (start the shell if needed).
-exec /usr/bin/python3 "$HOME/.luke/shell/client.py" quick

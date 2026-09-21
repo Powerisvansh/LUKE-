@@ -1,3 +1,0 @@
-#!/bin/sh
-# Bring the LukeShell home surface to the front (start it if needed).
-exec /usr/bin/python3 "$HOME/.luke/shell/client.py" home
